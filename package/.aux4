@@ -1,0 +1,515 @@
+{
+  "scope": "community",
+  "name": "ksqldb",
+  "version": "0.0.1",
+  "description": "Commands to interact with ksqlDB using the REST API",
+  "git": "https://github.com/aux4/ksqldb",
+  "system": [
+    [
+      "test:curl --version",
+      "brew:curl"
+    ]
+  ],
+  "tags": [
+    "ksqldb",
+    "kafka",
+    "streaming",
+    "sql",
+    "cli"
+  ],
+  "profiles": [
+    {
+      "name": "main",
+      "commands": [
+        {
+          "name": "ksqldb",
+          "execute": [
+            "profile:ksqldb"
+          ],
+          "help": {
+            "text": "ksqlDB commands"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ksqldb",
+      "commands": [
+        {
+          "name": "topic",
+          "execute": [
+            "profile:ksqldb:topic"
+          ],
+          "help": {
+            "text": "Manage Kafka topics via ksqlDB"
+          }
+        },
+        {
+          "name": "stream",
+          "execute": [
+            "profile:ksqldb:stream"
+          ],
+          "help": {
+            "text": "Manage ksqlDB streams"
+          }
+        },
+        {
+          "name": "table",
+          "execute": [
+            "profile:ksqldb:table"
+          ],
+          "help": {
+            "text": "Manage ksqlDB tables"
+          }
+        },
+        {
+          "name": "query",
+          "execute": [
+            "profile:ksqldb:query"
+          ],
+          "help": {
+            "text": "Execute ksqlDB queries"
+          }
+        },
+        {
+          "name": "info",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X GET \"${server}/info\" || curl -s -X GET \"${server}/info\""
+          ],
+          "help": {
+            "text": "Get ksqlDB server info",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "health",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X GET \"${server}/healthcheck\" || curl -s -X GET \"${server}/healthcheck\""
+          ],
+          "help": {
+            "text": "Check ksqlDB server health",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ksqldb:topic",
+      "commands": [
+        {
+          "name": "list",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TOPICS;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TOPICS;\"}'"
+          ],
+          "help": {
+            "text": "List all Kafka topics",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "describe",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE TOPIC ${topic};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE TOPIC ${topic};\"}'"
+          ],
+          "help": {
+            "text": "Describe a Kafka topic",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "topic",
+                "text": "Name of the topic to describe",
+                "arg": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ksqldb:stream",
+      "commands": [
+        {
+          "name": "list",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW STREAMS;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW STREAMS;\"}'"
+          ],
+          "help": {
+            "text": "List all ksqlDB streams",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "describe",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE ${stream};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE ${stream};\"}'"
+          ],
+          "help": {
+            "text": "Describe a ksqlDB stream",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "stream",
+                "text": "Name of the stream to describe",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "drop",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DROP STREAM ${stream};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DROP STREAM ${stream};\"}'"
+          ],
+          "help": {
+            "text": "Drop a ksqlDB stream",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "stream",
+                "text": "Name of the stream to drop",
+                "arg": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ksqldb:table",
+      "commands": [
+        {
+          "name": "list",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TABLES;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TABLES;\"}'"
+          ],
+          "help": {
+            "text": "List all ksqlDB tables",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "describe",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE ${table};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE ${table};\"}'"
+          ],
+          "help": {
+            "text": "Describe a ksqlDB table",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "table",
+                "text": "Name of the table to describe",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "drop",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DROP TABLE ${table};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DROP TABLE ${table};\"}'"
+          ],
+          "help": {
+            "text": "Drop a ksqlDB table",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "table",
+                "text": "Name of the table to drop",
+                "arg": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ksqldb:query",
+      "commands": [
+        {
+          "name": "list",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW QUERIES;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW QUERIES;\"}'"
+          ],
+          "help": {
+            "text": "List all running queries",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "run",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"${ksql};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"${ksql};\"}'"
+          ],
+          "help": {
+            "text": "Execute a ksqlDB statement (semicolon is appended automatically)",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "ksql",
+                "text": "ksqlDB statement to execute",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "terminate",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"TERMINATE ${queryId};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"TERMINATE ${queryId};\"}'"
+          ],
+          "help": {
+            "text": "Terminate a running query",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "queryId",
+                "text": "ID of the query to terminate",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "explain",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"EXPLAIN ${queryId};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"EXPLAIN ${queryId};\"}'"
+          ],
+          "help": {
+            "text": "Explain a query execution plan",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "queryId",
+                "text": "ID of the query to explain",
+                "arg": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
