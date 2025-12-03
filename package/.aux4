@@ -7,7 +7,13 @@
   "system": [
     [
       "test:curl --version",
-      "brew:curl"
+      "brew:curl",
+      "linux:curl"
+    ],
+    [
+      "test:jq --version",
+      "brew:jq",
+      "linux:jq"
     ]
   ],
   "tags": [
@@ -133,7 +139,7 @@
         {
           "name": "list",
           "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TOPICS;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TOPICS;\"}'"
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TOPICS;\"}' | jq -c 'if type == \"array\" then .[0].topics else error(.message) end' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TOPICS;\"}' | jq -c 'if type == \"array\" then .[0].topics else error(.message) end'"
           ],
           "help": {
             "text": "List all Kafka topics",
@@ -156,38 +162,6 @@
               }
             ]
           }
-        },
-        {
-          "name": "describe",
-          "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE TOPIC ${topic};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"DESCRIBE TOPIC ${topic};\"}'"
-          ],
-          "help": {
-            "text": "Describe a Kafka topic",
-            "variables": [
-              {
-                "name": "server",
-                "text": "ksqlDB server URL",
-                "default": "http://localhost:8088"
-              },
-              {
-                "name": "username",
-                "text": "Username for authentication (optional)",
-                "default": ""
-              },
-              {
-                "name": "password",
-                "text": "Password for authentication (optional)",
-                "default": "",
-                "hide": true
-              },
-              {
-                "name": "topic",
-                "text": "Name of the topic to describe",
-                "arg": true
-              }
-            ]
-          }
         }
       ]
     },
@@ -197,7 +171,7 @@
         {
           "name": "list",
           "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW STREAMS;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW STREAMS;\"}'"
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW STREAMS;\"}' | jq -c 'if type == \"array\" then .[0].streams else error(.message) end' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW STREAMS;\"}' | jq -c 'if type == \"array\" then .[0].streams else error(.message) end'"
           ],
           "help": {
             "text": "List all ksqlDB streams",
@@ -293,7 +267,7 @@
         {
           "name": "list",
           "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TABLES;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TABLES;\"}'"
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TABLES;\"}' | jq -c 'if type == \"array\" then .[0].tables else error(.message) end' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW TABLES;\"}' | jq -c 'if type == \"array\" then .[0].tables else error(.message) end'"
           ],
           "help": {
             "text": "List all ksqlDB tables",
@@ -389,7 +363,7 @@
         {
           "name": "list",
           "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW QUERIES;\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW QUERIES;\"}'"
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW QUERIES;\"}' | jq -c 'if type == \"array\" then .[0].queries else error(.message) end' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"SHOW QUERIES;\"}' | jq -c 'if type == \"array\" then .[0].queries else error(.message) end'"
           ],
           "help": {
             "text": "List all running queries",
@@ -416,7 +390,7 @@
         {
           "name": "run",
           "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"${ksql};\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"${ksql};\"}'"
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}'"
           ],
           "help": {
             "text": "Execute a ksqlDB statement (semicolon is appended automatically)",
@@ -504,6 +478,75 @@
               {
                 "name": "queryId",
                 "text": "ID of the query to explain",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "select",
+          "execute": [
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}' || curl -s -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}'"
+          ],
+          "help": {
+            "text": "Execute a pull query (SELECT) against a materialized table",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "ksql",
+                "text": "SELECT query to execute",
+                "arg": true
+              }
+            ]
+          }
+        },
+        {
+          "name": "push",
+          "execute": [
+            "if(username) && curl -s -N -u ${username}:${password} -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\", \"streamsProperties\": {\"auto.offset.reset\": \"'\"${offset}\"'\"}}' || curl -s -N -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\", \"streamsProperties\": {\"auto.offset.reset\": \"'\"${offset}\"'\"}}'"
+          ],
+          "help": {
+            "text": "Execute a push query (SELECT ... EMIT CHANGES) for streaming results",
+            "variables": [
+              {
+                "name": "server",
+                "text": "ksqlDB server URL",
+                "default": "http://localhost:8088"
+              },
+              {
+                "name": "username",
+                "text": "Username for authentication (optional)",
+                "default": ""
+              },
+              {
+                "name": "password",
+                "text": "Password for authentication (optional)",
+                "default": "",
+                "hide": true
+              },
+              {
+                "name": "offset",
+                "text": "Where to start reading (earliest or latest)",
+                "default": "earliest"
+              },
+              {
+                "name": "ksql",
+                "text": "SELECT query with EMIT CHANGES",
                 "arg": true
               }
             ]
