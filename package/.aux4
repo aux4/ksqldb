@@ -16,11 +16,15 @@
       "linux:jq"
     ]
   ],
+  "dependencies": [
+    "aux4/db"
+  ],
   "tags": [
     "ksqldb",
     "kafka",
     "streaming",
     "sql",
+    "db",
     "cli"
   ],
   "profiles": [
@@ -390,10 +394,11 @@
         {
           "name": "run",
           "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}'"
+            "set:query=!aux4 db driver sql-bind param(ksql:query) --params value(*)",
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${query}\"';\"}' || curl -s -X POST \"${server}/ksql\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${query}\"';\"}'"
           ],
           "help": {
-            "text": "Execute a ksqlDB statement (semicolon is appended automatically)",
+            "text": "Execute a ksqlDB statement with optional parameter binding (e.g., :name)",
             "variables": [
               {
                 "name": "server",
@@ -413,7 +418,7 @@
               },
               {
                 "name": "ksql",
-                "text": "ksqlDB statement to execute",
+                "text": "ksqlDB statement to execute (supports :param placeholders)",
                 "arg": true
               }
             ]
@@ -486,10 +491,11 @@
         {
           "name": "select",
           "execute": [
-            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}' || curl -s -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\"}'"
+            "set:query=!aux4 db driver sql-bind param(ksql:query) --params value(*)",
+            "if(username) && curl -s -u ${username}:${password} -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${query}\"';\"}' || curl -s -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${query}\"';\"}'"
           ],
           "help": {
-            "text": "Execute a pull query (SELECT) against a materialized table",
+            "text": "Execute a pull query (SELECT) against a materialized table with optional parameter binding",
             "variables": [
               {
                 "name": "server",
@@ -509,7 +515,7 @@
               },
               {
                 "name": "ksql",
-                "text": "SELECT query to execute",
+                "text": "SELECT query to execute (supports :param placeholders)",
                 "arg": true
               }
             ]
@@ -518,10 +524,11 @@
         {
           "name": "push",
           "execute": [
-            "if(username) && curl -s -N -u ${username}:${password} -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\", \"streamsProperties\": {\"auto.offset.reset\": \"'\"${offset}\"'\"}}' || curl -s -N -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${ksql}\"';\", \"streamsProperties\": {\"auto.offset.reset\": \"'\"${offset}\"'\"}}'"
+            "set:query=!aux4 db driver sql-bind param(ksql:query) --params value(*)",
+            "if(username) && curl -s -N -u ${username}:${password} -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${query}\"';\", \"streamsProperties\": {\"auto.offset.reset\": \"'\"${offset}\"'\"}}' || curl -s -N -X POST \"${server}/query\" -H \"Content-Type: application/vnd.ksql.v1+json\" -d '{\"ksql\": \"'\"${query}\"';\", \"streamsProperties\": {\"auto.offset.reset\": \"'\"${offset}\"'\"}}'"
           ],
           "help": {
-            "text": "Execute a push query (SELECT ... EMIT CHANGES) for streaming results",
+            "text": "Execute a push query (SELECT ... EMIT CHANGES) for streaming results with optional parameter binding",
             "variables": [
               {
                 "name": "server",
@@ -546,7 +553,7 @@
               },
               {
                 "name": "ksql",
-                "text": "SELECT query with EMIT CHANGES",
+                "text": "SELECT query with EMIT CHANGES (supports :param placeholders)",
                 "arg": true
               }
             ]

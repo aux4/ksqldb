@@ -52,6 +52,16 @@ aux4 ksqldb query run "INSERT INTO TEST_AUX4_STREAM (id, name) VALUES (2, 'bob')
 []
 ```
 
+## insert with params
+
+```execute
+aux4 ksqldb query run "INSERT INTO TEST_AUX4_STREAM (id, name) VALUES (3, :name)" --name "charlie"
+```
+
+```expect
+[]
+```
+
 ## drop stream
 
 ```execute

@@ -75,3 +75,17 @@ aux4 ksqldb query run "INSERT INTO TEST_AUX4_QUERY_STREAM (id, name) VALUES (1, 
 ```expect
 ID
 ```
+
+## select with params
+
+```timeout
+15000
+```
+
+```execute
+aux4 ksqldb query run "INSERT INTO TEST_AUX4_QUERY_STREAM (id, name) VALUES (2, :name)" --name "paramtest" > /dev/null && sleep 8 && aux4 ksqldb query select "SELECT * FROM TEST_AUX4_QUERY_TABLE WHERE name = :name" --name "paramtest" | tail -1
+```
+
+```expect:partial
+paramtest
+```
