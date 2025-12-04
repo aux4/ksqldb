@@ -141,7 +141,24 @@ Run ksql statements, pull queries, push queries, and manage running queries.
 - Terminate a query: [aux4 ksqldb query terminate](./commands/ksqldb/query/terminate)
 - Explain a query plan: [aux4 ksqldb query explain](./commands/ksqldb/query/explain)
 
-Examples (from tests):
+### Parameter Binding
+
+The `query run`, `query select`, and `query push` commands support parameter binding for safe value substitution. Use `:paramName` placeholders in your ksql statement and pass values via `--paramName`:
+
+```bash
+# Insert with parameter binding
+aux4 ksqldb query run "INSERT INTO my_stream (id, name) VALUES (1, :name)" --name "John"
+
+# Select with parameter binding
+aux4 ksqldb query select "SELECT * FROM my_table WHERE name = :name" --name "John"
+
+# Push query with parameter binding
+aux4 ksqldb query push "SELECT * FROM my_stream WHERE status = :status EMIT CHANGES" --status "active"
+```
+
+**Note:** Parameters are bound as strings (quoted values) for SQL injection protection. This works well for string columns. For integer columns in WHERE clauses, you may need to use literal values or cast appropriately.
+
+### Examples
 
 List queries (returns an array):
 
@@ -164,6 +181,16 @@ aux4 ksqldb query run "INSERT INTO TEST_AUX4_QUERY_STREAM (id, name) VALUES (1, 
 ```
 
 This sequence inserts a row into the stream, waits for the table to be populated, and then prints the first column name (test expectation: ID).
+
+Insert and select using parameter binding:
+
+```bash
+# Insert with params
+aux4 ksqldb query run "INSERT INTO my_stream (id, name) VALUES (1, :name)" --name "alice"
+
+# Select with params
+aux4 ksqldb query select "SELECT * FROM my_table WHERE name = :name" --name "alice"
+```
 
 ## Examples
 
