@@ -1,7 +1,7 @@
 {
   "scope": "community",
   "name": "ksqldb",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Commands to interact with ksqlDB using the REST API",
   "git": "https://github.com/aux4/ksqldb",
   "system": [
